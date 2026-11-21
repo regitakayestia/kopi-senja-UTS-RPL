@@ -1,0 +1,37 @@
+sequenceDiagram
+    autonumber
+    actor Kasir
+    participant Pesanan as :Pesanan
+    participant Pembayaran as :Pembayaran
+    participant QRIS as :LayananQRIS
+    participant Resep as :Resep
+    participant Stok as :StokBahan
+    actor Manajer as :ManajerCabang
+
+    Kasir->>+Pesanan: hitungTotal()
+    Pesanan-->>-Kasir: total
+    Kasir->>+Pembayaran: proses(noPesanan, metode, jumlah)
+    alt metode = QRIS
+        Pembayaran->>+QRIS: buatKodeQris(total)
+        QRIS-->>-Pembayaran: kodeQris
+        Pembayaran->>+QRIS: verifikasi(kodeQris)
+        QRIS-->>-Pembayaran: statusBayar
+    else metode = TUNAI
+        Pembayaran->>Pembayaran: hitungKembalian(jumlah)
+    end
+    alt pembayaran berhasil
+        Pembayaran->>+Pesanan: tandaiLunas()
+        loop untuk setiap DetailPesanan
+            Pesanan->>+Resep: ambilKebutuhanBahan(kodeMenu, qty)
+            Resep-->>-Pesanan: daftarBahan
+            Pesanan->>+Stok: kurangiStok(idBahan, jumlah)
+            Stok-->>-Pesanan: stokBaru
+            opt stokBaru <= stokMinimum
+                Stok->>Manajer: terimaPeringatanStok(namaBahan, sisa)
+            end
+        end
+        Pesanan-->>-Pembayaran: status LUNAS
+        Pembayaran-->>Kasir: struk (LUNAS)
+    else pembayaran gagal
+        Pembayaran-->>-Kasir: status GAGAL (stok tidak berubah)
+    end

@@ -1,0 +1,91 @@
+erDiagram
+    cabang ||--o{ staf : "mempekerjakan"
+    cabang ||--o{ pesanan : "menerima"
+    cabang ||--o{ stok_cabang : "menyimpan"
+    bahan ||--o{ stok_cabang : "tercatat di"
+    bahan ||--o{ resep : "dipakai di"
+    menu ||--o{ resep : "memiliki"
+    menu ||--o{ detail_pesanan : "dipesan di"
+    pesanan ||--|{ detail_pesanan : "terdiri dari"
+    pesanan ||--o| pembayaran : "dibayar lewat"
+    pelanggan |o--o{ pesanan : "membuat"
+    staf |o--o{ pesanan : "melayani"
+    promo |o--o{ pesanan : "dipakai pada"
+
+    cabang {
+        varchar id_cabang PK
+        varchar nama_cabang
+        varchar alamat
+    }
+    staf {
+        varchar id_staf PK
+        varchar id_cabang FK
+        varchar nama_staf
+        varchar email
+        varchar kata_sandi_hash
+        enum peran
+    }
+    pelanggan {
+        varchar id_pelanggan PK
+        varchar nama_pelanggan
+        varchar no_hp
+        varchar kata_sandi_hash
+    }
+    menu {
+        varchar kode_menu PK
+        varchar nama_menu
+        varchar kategori
+        decimal harga
+        boolean aktif
+    }
+    promo {
+        varchar id_promo PK
+        varchar nama_promo
+        enum jenis_diskon
+        decimal nilai_diskon
+        date tgl_mulai
+        date tgl_selesai
+    }
+    pesanan {
+        varchar no_pesanan PK
+        datetime waktu_pesan
+        varchar id_cabang FK
+        varchar id_staf FK
+        varchar id_pelanggan FK
+        varchar id_promo FK
+        enum saluran
+        enum status
+        decimal potongan
+    }
+    detail_pesanan {
+        varchar no_pesanan PK, FK
+        varchar kode_menu PK, FK
+        int qty
+        decimal harga_satuan
+        varchar catatan
+    }
+    pembayaran {
+        varchar id_pembayaran PK
+        varchar no_pesanan FK
+        enum metode
+        decimal jumlah_bayar
+        enum status
+        datetime waktu_bayar
+        varchar ref_qris
+    }
+    bahan {
+        varchar id_bahan PK
+        varchar nama_bahan
+        varchar satuan
+    }
+    stok_cabang {
+        varchar id_cabang PK, FK
+        varchar id_bahan PK, FK
+        decimal jumlah_stok
+        decimal stok_minimum
+    }
+    resep {
+        varchar kode_menu PK, FK
+        varchar id_bahan PK, FK
+        decimal takaran
+    }

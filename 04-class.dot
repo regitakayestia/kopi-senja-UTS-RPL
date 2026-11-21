@@ -1,0 +1,94 @@
+digraph G {
+  graph [rankdir=TB, nodesep=0.3, ranksep=0.6, fontname="Inter", splines=true, pad=0.3, bgcolor=white];
+  node  [shape=plaintext, fontname="Inter", fontsize=11];
+  edge  [fontname="Inter", fontsize=10, color="#44403c", arrowsize=0.9, labeldistance=1.6];
+
+  // ---------- pengguna ----------
+  Pengguna [label=<<table border="1" cellborder="0" cellspacing="0" cellpadding="3" bgcolor="#fff7ed" color="#9a3412">
+   <tr><td border="1" sides="B"><b><i>Pengguna</i></b><br/>«abstract»</td></tr>
+   <tr><td align="left" border="1" sides="B">- idPengguna : String<br align="left"/>- nama : String<br align="left"/>- kataSandiHash : String<br align="left"/></td></tr>
+   <tr><td align="left">+ login(kredensial) : boolean<br align="left"/>+ logout() : void<br align="left"/></td></tr></table>>];
+  Pelanggan [label=<<table border="1" cellborder="0" cellspacing="0" cellpadding="3" bgcolor="#fff7ed" color="#9a3412">
+   <tr><td border="1" sides="B"><b>Pelanggan</b></td></tr>
+   <tr><td align="left" border="1" sides="B">- noHp : String<br align="left"/></td></tr>
+   <tr><td align="left">+ buatPesananOnline() : Pesanan<br align="left"/>+ lihatStatusPesanan() : String<br align="left"/></td></tr></table>>];
+  Staf [label=<<table border="1" cellborder="0" cellspacing="0" cellpadding="3" bgcolor="#fff7ed" color="#9a3412">
+   <tr><td border="1" sides="B"><b>Staf</b><br/>«abstract»</td></tr>
+   <tr><td align="left" border="1" sides="B">- idStaf : String<br align="left"/>- email : String<br align="left"/></td></tr>
+   <tr><td align="left">+ lihatLaporan(periode) : Laporan<br align="left"/></td></tr></table>>];
+  Kasir [label=<<table border="1" cellborder="0" cellspacing="0" cellpadding="3" bgcolor="#fff7ed" color="#9a3412">
+   <tr><td border="1" sides="B"><b>Kasir</b></td></tr>
+   <tr><td align="left">+ inputPesanan() : Pesanan<br align="left"/>+ terimaPembayaran() : Pembayaran<br align="left"/></td></tr></table>>];
+  Barista [label=<<table border="1" cellborder="0" cellspacing="0" cellpadding="3" bgcolor="#fff7ed" color="#9a3412">
+   <tr><td border="1" sides="B"><b>Barista</b></td></tr>
+   <tr><td align="left">+ lihatAntrean() : List&lt;Pesanan&gt;<br align="left"/>+ ubahStatusPesanan(status) : void<br align="left"/></td></tr></table>>];
+  ManajerCabang [label=<<table border="1" cellborder="0" cellspacing="0" cellpadding="3" bgcolor="#fff7ed" color="#9a3412">
+   <tr><td border="1" sides="B"><b>ManajerCabang</b></td></tr>
+   <tr><td align="left">+ kelolaMenu() : void<br align="left"/>+ perbaruiStok(idBahan, jumlah) : void<br align="left"/>+ terimaPeringatanStok(namaBahan, sisa) : void<br align="left"/></td></tr></table>>];
+  Pemilik [label=<<table border="1" cellborder="0" cellspacing="0" cellpadding="3" bgcolor="#fff7ed" color="#9a3412">
+   <tr><td border="1" sides="B"><b>Pemilik</b></td></tr>
+   <tr><td align="left">+ lihatLaporanSemuaCabang() : Laporan<br align="left"/></td></tr></table>>];
+
+  // ---------- domain ----------
+  Cabang [label=<<table border="1" cellborder="0" cellspacing="0" cellpadding="3" bgcolor="#f5f5f4" color="#44403c">
+   <tr><td border="1" sides="B"><b>Cabang</b></td></tr>
+   <tr><td align="left" border="1" sides="B">- idCabang : String<br align="left"/>- namaCabang : String<br align="left"/>- alamat : String<br align="left"/></td></tr>
+   <tr><td align="left">+ laporanPenjualan(periode) : Laporan<br align="left"/></td></tr></table>>];
+  Menu [label=<<table border="1" cellborder="0" cellspacing="0" cellpadding="3" bgcolor="#f5f5f4" color="#44403c">
+   <tr><td border="1" sides="B"><b>Menu</b></td></tr>
+   <tr><td align="left" border="1" sides="B">- kodeMenu : String<br align="left"/>- namaMenu : String<br align="left"/>- harga : Decimal<br align="left"/>- aktif : boolean<br align="left"/></td></tr>
+   <tr><td align="left">+ tersedia(idCabang) : boolean<br align="left"/></td></tr></table>>];
+  Promo [label=<<table border="1" cellborder="0" cellspacing="0" cellpadding="3" bgcolor="#f5f5f4" color="#44403c">
+   <tr><td border="1" sides="B"><b>Promo</b></td></tr>
+   <tr><td align="left" border="1" sides="B">- idPromo : String<br align="left"/>- jenisDiskon : String<br align="left"/>- nilaiDiskon : Decimal<br align="left"/></td></tr>
+   <tr><td align="left">+ hitungPotongan(subtotal) : Decimal<br align="left"/></td></tr></table>>];
+  Pesanan [label=<<table border="1" cellborder="0" cellspacing="0" cellpadding="3" bgcolor="#fef3c7" color="#92400e">
+   <tr><td border="1" sides="B"><b>Pesanan</b></td></tr>
+   <tr><td align="left" border="1" sides="B">- noPesanan : String<br align="left"/>- waktuPesan : DateTime<br align="left"/>- saluran : String<br align="left"/>- status : String<br align="left"/>- potongan : Decimal<br align="left"/></td></tr>
+   <tr><td align="left">+ tambahItem(kodeMenu, qty) : void<br align="left"/>+ hitungTotal() : Decimal<br align="left"/>+ tandaiLunas() : void<br align="left"/>+ ubahStatus(status) : void<br align="left"/></td></tr></table>>];
+  DetailPesanan [label=<<table border="1" cellborder="0" cellspacing="0" cellpadding="3" bgcolor="#fef3c7" color="#92400e">
+   <tr><td border="1" sides="B"><b>DetailPesanan</b></td></tr>
+   <tr><td align="left" border="1" sides="B">- qty : int<br align="left"/>- hargaSatuan : Decimal<br align="left"/>- catatan : String<br align="left"/></td></tr>
+   <tr><td align="left">+ hitungSubtotal() : Decimal<br align="left"/></td></tr></table>>];
+  Pembayaran [label=<<table border="1" cellborder="0" cellspacing="0" cellpadding="3" bgcolor="#fef3c7" color="#92400e">
+   <tr><td border="1" sides="B"><b>Pembayaran</b></td></tr>
+   <tr><td align="left" border="1" sides="B">- idPembayaran : String<br align="left"/>- metode : String<br align="left"/>- jumlahBayar : Decimal<br align="left"/>- status : String<br align="left"/></td></tr>
+   <tr><td align="left">+ proses(noPesanan, metode, jumlah) : String<br align="left"/>+ hitungKembalian(jumlah) : Decimal<br align="left"/></td></tr></table>>];
+  LayananQRIS [label=<<table border="1" cellborder="0" cellspacing="0" cellpadding="3" bgcolor="#e7e5e4" color="#44403c" style="dashed">
+   <tr><td border="1" sides="B"><b>LayananQRIS</b><br/>«external»</td></tr>
+   <tr><td align="left">+ buatKodeQris(total) : String<br align="left"/>+ verifikasi(kodeQris) : String<br align="left"/></td></tr></table>>];
+  Bahan [label=<<table border="1" cellborder="0" cellspacing="0" cellpadding="3" bgcolor="#f5f5f4" color="#44403c">
+   <tr><td border="1" sides="B"><b>Bahan</b></td></tr>
+   <tr><td align="left">- idBahan : String<br align="left"/>- namaBahan : String<br align="left"/>- satuan : String<br align="left"/></td></tr></table>>];
+  StokBahan [label=<<table border="1" cellborder="0" cellspacing="0" cellpadding="3" bgcolor="#f5f5f4" color="#44403c">
+   <tr><td border="1" sides="B"><b>StokBahan</b></td></tr>
+   <tr><td align="left" border="1" sides="B">- jumlahStok : Decimal<br align="left"/>- stokMinimum : Decimal<br align="left"/></td></tr>
+   <tr><td align="left">+ kurangiStok(idBahan, jumlah) : Decimal<br align="left"/>+ tambahStok(idBahan, jumlah) : void<br align="left"/>+ cekStokMinimum() : boolean<br align="left"/></td></tr></table>>];
+  Resep [label=<<table border="1" cellborder="0" cellspacing="0" cellpadding="3" bgcolor="#f5f5f4" color="#44403c">
+   <tr><td border="1" sides="B"><b>Resep</b></td></tr>
+   <tr><td align="left" border="1" sides="B">- takaran : Decimal<br align="left"/></td></tr>
+   <tr><td align="left">+ ambilKebutuhanBahan(kodeMenu, qty) : List&lt;Bahan&gt;<br align="left"/></td></tr></table>>];
+
+  // ---------- generalisasi ----------
+  edge [dir=back, arrowtail=empty, arrowhead=none];
+  Pengguna -> Pelanggan; Pengguna -> Staf;
+  Staf -> Kasir; Staf -> Barista; Staf -> ManajerCabang; Staf -> Pemilik;
+
+  // ---------- komposisi / agregasi / asosiasi ----------
+  edge [arrowhead=none, dir=both, arrowtail=none, labeldistance=2.2, labelangle=-25];
+  Pesanan -> DetailPesanan [arrowtail=diamond, taillabel="1", headlabel="1..*", label=" terdiri dari"];
+  Cabang  -> StokBahan     [arrowtail=diamond, taillabel="1", headlabel="*", label=" menyimpan"];
+  Menu    -> Resep         [arrowtail=diamond, taillabel="1", headlabel="1..*", label=" memiliki"];
+  Cabang  -> Staf          [arrowtail=odiamond, taillabel="0..1", headlabel="*", label=" mempekerjakan"];
+  Cabang  -> Pesanan       [taillabel="1", headlabel="*", label=" menerima"];
+  Pelanggan -> Pesanan     [taillabel="0..1", headlabel="*", label=" membuat"];
+  Kasir   -> Pesanan       [taillabel="0..1", headlabel="*", label=" melayani"];
+  Promo   -> Pesanan       [taillabel="0..1", headlabel="*", label=" dipakai pada"];
+  Menu    -> DetailPesanan [taillabel="1", headlabel="*", label=" dipesan di"];
+  Pesanan -> Pembayaran    [taillabel="1", headlabel="0..1", label=" dibayar lewat"];
+  Bahan   -> Resep         [taillabel="1", headlabel="*", label=" dipakai di"];
+  Bahan   -> StokBahan     [taillabel="1", headlabel="*", label=" tercatat di"];
+  edge [style=dashed, arrowhead=vee, arrowtail=none, dir=forward];
+  Pembayaran -> LayananQRIS [label=" «use»"];
+  StokBahan  -> ManajerCabang [label=" «notify»"];
+}

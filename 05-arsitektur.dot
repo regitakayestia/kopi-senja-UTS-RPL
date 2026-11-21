@@ -1,0 +1,26 @@
+digraph A {
+  graph [rankdir=TB, nodesep=0.35, ranksep=0.7, fontname="Inter", pad=0.3, bgcolor=white, compound=true, splines=true, newrank=true];
+  node  [shape=box, style="rounded,filled", fillcolor="#fff7ed", color="#9a3412", fontname="Inter", fontsize=12, margin="0.2,0.12"];
+  edge  [fontname="Inter", fontsize=10.5, color="#44403c"];
+
+  subgraph cluster_klien { label="KLIEN — Browser web responsif (HP pelanggan, PC/tablet kasir, layar barista)"; style="rounded,dashed"; color="#78716c"; fontname="Inter"; fontsize=12;
+    pel [label="Pelanggan\npesan & lacak status"]; kas [label="Kasir\ninput pesanan & bayar"]; bar [label="Barista\nantrean pesanan"]; man [label="Manajer Cabang / Pemilik\nstok, menu, laporan"]; }
+
+  subgraph cluster_app { label="SERVER APLIKASI — Node.js (REST API + WebSocket)"; style="rounded,filled"; fillcolor="#fafaf9"; color="#78716c"; fontname="Inter"; fontsize=12;
+    gw [label="API Gateway\nHTTPS · autentikasi · RBAC"]; ctl [label="Controller\nPesanan · Pembayaran · Stok · Laporan"]; svc [label="Service\nPesananService · PembayaranService\nStokService · LaporanService"]; rep [label="Repository\nakses data"]; ws [label="Pemancar Real-time\nWebSocket / polling 5 detik"]; }
+
+  db  [label="DATABASE MySQL 8\n11 tabel · transaksi ACID · backup harian", shape=cylinder, fillcolor="#fef3c7", color="#92400e"];
+  qris [label="LAYANAN PEMBAYARAN\nQRIS (simulasi / sandbox)", fillcolor="#e7e5e4", color="#44403c", style="filled,dashed,rounded"];
+
+  {rank=same; pel; kas; bar; man}
+  pel -> gw [label=" HTTPS"]; kas -> gw; bar -> gw; man -> gw;
+  gw -> ctl [label=" request terautentikasi"];
+  ctl -> svc [label=" panggil"];
+  {rank=same; rep; ws; qris}
+  svc -> rep [label=" operasi data"];
+  svc -> ws  [label=" status pesanan berubah"];
+  svc -> qris [label=" API HTTPS: buat kode QR,\n verifikasi", dir=both, style=dashed];
+  rep -> db [label=" SQL (transaksi ACID)"];
+  ws -> bar [label=" push antrean baru", style=dashed, constraint=false];
+  ws -> pel [label=" push pesanan siap", style=dashed, constraint=false];
+}
